@@ -13,7 +13,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<types.Message> _messages = [];
   final types.User _user = const types.User(id: "user_id");
   final types.User _bot = const types.User(id: "bot_id");
- final TextEditingController _textController = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
   void handlesendpressed(types.PartialText message) async {
     final newMessage = types.TextMessage(
       id: Uuid().v4(),
@@ -36,7 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
   }
-void _handleSubmit(String text) {
+
+  void _handleSubmit(String text) {
     if (text.trim().isNotEmpty) {
       handlesendpressed(types.PartialText(text: text));
       _textController.clear(); // Clear the input field
@@ -48,6 +49,7 @@ void _handleSubmit(String text) {
     _textController.dispose(); // Clean up controller
     super.dispose();
   }
+
   @override
   void initState() {
     super.initState();
@@ -58,12 +60,35 @@ void _handleSubmit(String text) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Startup Chatbot"),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              'Startup ',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
+            ),
+
+            Image.asset('assets/startup.png', height: 60, width: 90),
+            Text(
+              ' Chatbot',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
+            ),
+          ],
+        ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 39, 154, 203),
+        backgroundColor: Color.fromARGB(255, 12, 51, 59),
       ),
+
       body: Container(
-        color: Color(0xFF6D39C6),
+        color: Color.fromARGB(255, 17, 27, 26),
         child: Column(
           children: [
             Expanded(
@@ -84,7 +109,7 @@ void _handleSubmit(String text) {
                         color:
                             isBot
                                 ? Color.fromARGB(255, 35, 35, 53)
-                                : Colors.white,
+                                : const Color.fromARGB(255, 60, 91, 97),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
@@ -96,7 +121,7 @@ void _handleSubmit(String text) {
                             child: Text(
                               (message as types.TextMessage).text,
                               style: TextStyle(
-                                color: isBot ? Colors.white : Colors.black,
+                                color: isBot ? Colors.white : Colors.white,
                                 fontWeight:
                                     isBot ? FontWeight.normal : FontWeight.bold,
                               ),
@@ -115,30 +140,54 @@ void _handleSubmit(String text) {
               child: Row(
                 children: [
                   Expanded(
-                    child: TextField(
-                      style: TextStyle(color: Colors.white),
-                      controller: _textController,
-                      decoration: InputDecoration(
-                        hintText: 'Type a message',
-                        hintStyle: TextStyle(color: Colors.white70),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.black12,
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxHeight: 120, // Maximum height before scrolling
+                        minHeight: 40, // Minimum height
                       ),
-                      onSubmitted: (text) {
-                        if (text.trim().isNotEmpty) {
-                          handlesendpressed(types.PartialText(text: text));
-                        }
-                      },
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black12,
+                      ),
+                      child: TextField(
+                        style: TextStyle(color: Colors.white),
+                        controller: _textController,
+                        maxLines: null, // Allow multiple lines
+                        minLines: 1,
+                        textInputAction: TextInputAction.newline,
+                        decoration: InputDecoration(
+                          hintText: 'Ask your Question',
+                          hintStyle: TextStyle(color: Colors.white70),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 22,
+                          ),
+                          filled: true,
+                          fillColor: Colors.black12,
+                          isCollapsed: true,
+                        ),
+                        onSubmitted: (text) {
+                          if (text.trim().isNotEmpty) {
+                            handlesendpressed(types.PartialText(text: text));
+                          }
+                        },
+                      ),
                     ),
                   ),
                   SizedBox(width: 8),
-                  IconButton(
-                    icon: Icon(Icons.rocket, color: Colors.white),
-                    onPressed: () => _handleSubmit(_textController.text),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 73, 112, 120),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.rocket, color: Colors.white),
+                      onPressed: () => _handleSubmit(_textController.text),
+                    ),
                   ),
                 ],
               ),
