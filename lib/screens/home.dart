@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:startup_chatbot/screens/drawer.dart';
 import 'package:uuid/uuid.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -40,8 +41,17 @@ class _MyHomePageState extends State<MyHomePage> {
   void _handleSubmit(String text) {
     if (text.trim().isNotEmpty) {
       handlesendpressed(types.PartialText(text: text));
-      _textController.clear(); // Clear the input field
+      _textController.clear();
     }
+  }
+
+  void newchat() {
+    // Save the messages of the old discussion
+
+    // Clear the current messages to start a new chat
+    setState(() {
+      _messages.clear();
+    });
   }
 
   @override
@@ -59,9 +69,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: cuDrawer(), // Add this
+
       appBar: AppBar(
+         automaticallyImplyLeading: false,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               'Startup ',
@@ -71,8 +84,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 fontSize: 30,
               ),
             ),
+           Builder(  // Wrap GestureDetector with Builder
+      builder: (BuildContext context) => GestureDetector(
+        child: Image.asset('assets/startup.png', height: 60, width: 90),
+        onTap: () {
+          Scaffold.of(context).openDrawer();
+        },
+      ),
+    ),
 
-            Image.asset('assets/startup.png', height: 60, width: 90),
             Text(
               ' Chatbot',
               style: TextStyle(
@@ -132,6 +152,33 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   );
                 },
+              ),
+            ),
+            GestureDetector(
+              onTap: () => newchat(),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  
+                  child: Container(
+                    color: Color.fromARGB(255, 12, 51, 59),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'New Chat',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                    
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          color: Colors.white,
+                          onPressed: () => newchat(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
             Container(
