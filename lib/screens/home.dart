@@ -16,7 +16,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool newchatvisible = false;
   bool animationapear = false;
   bool pemisionrequest = false;
-  bool iconsenpresed = false ;
+   String txtinputforion = '';
   final List<types.Message> _messages = [];
   final types.User _user = const types.User(id: "user_id");
   final types.User _bot = const types.User(id: "bot_id");
@@ -79,38 +79,30 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     rec_service.initilasation();
+    _textController.addListener(updateicon);
     // Initialize any necessary data or state here
+  }
+
+  void updateicon() {
+    setState(() {
+      txtinputforion = _textController.text.toString();
+    });
   }
 
   Future<void> _initSpeechService() async {
     await rec_service.requestPermission();
     bool isAvailable = await rec_service.initilasation();
     if (isAvailable) {
-     setState(() {
+      setState(() {
         pemisionrequest = true;
-     });
-     
+      });
     }
   }
+
   void _updateTextcontrol(String newText) {
     setState(() {
       _textController.text = newText;
     });
-  }
-  void _onPress() {
-    setState(() {
-      iconsenpresed = true;
-    });
-    print("Button Pressed - Function Called");
-    // Call function when button is pressed
-  }
-
-  void _onRelease() {
-    setState(() {
-      iconsenpresed = false;
-    });
-    print("Button Released - Another Function Called");
-    // Call function when button is released
   }
 
   @override
@@ -319,21 +311,26 @@ class _MyHomePageState extends State<MyHomePage> {
                       shape: BoxShape.circle,
                     ),
                     child: GestureDetector(
-                    onLongPress: ()async => rec_service.startListening(_updateTextcontrol),
-                    onLongPressUp:rec_service.stopListening ,
-                    onTap: () =>_handleSubmit(_textController.text) ,
+                      onLongPress:
+                          () async =>
+                              rec_service.startListening(_updateTextcontrol),
+                      onLongPressUp: rec_service.stopListening,
+                      onTap: () => _handleSubmit(_textController.text),
                       child: IconButton(
                         icon: Icon(
-                          _textController.text.isEmpty?
-                          Icons.mic: Icons.rocket, color: Colors.white),
-                        onPressed:()=> _handleSubmit(_textController.text),
+                         txtinputforion==''
+                              ? Icons.mic
+                              : Icons.rocket,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => _handleSubmit(_textController.text),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-          ], 
+          ],
         ),
       ),
     );
