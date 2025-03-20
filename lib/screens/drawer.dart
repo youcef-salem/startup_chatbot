@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 class cuDrawer extends StatelessWidget {
   const cuDrawer({super.key});
 
@@ -34,63 +35,10 @@ class cuDrawer extends StatelessWidget {
             
            
             ),
-             Padding(
-               padding: const EdgeInsets.only(top: 50,left: 10),
-               
-               child: Row(
-                
-                 children: [
-                  Text("My acount",style: TextStyle(fontSize: 40,color: Colors.white),),
-                   IconButton(
-                    icon: Icon(Icons.account_circle,size: 80,color:  Colors.white,),
-                    onPressed: () {
-                     
-                    }, 
-                     ),
-                 ],
-               ),
-                           
-             ),
-              Padding(
-               padding: const EdgeInsets.only(top: 50,left: 10),
-               
-               child: Row(
-                
-                 children: [
-                  Text("Last Chat ",style: TextStyle(fontSize: 40 ,color: Colors.white),),
-                   IconButton(
-                    icon: Icon(Icons.list,size: 80,color:  Colors.white),
-                    onPressed: () {
-                     
-                    }, 
-                     ),
-                 ],
-               ),
-                           
-             ),
-            Padding(
-               padding: const EdgeInsets.only(top: 50,left:  10),
-               
-               child: Row(
-                
-                 children: [
-                  Text("Support",style: TextStyle(fontSize: 40,color: Colors.white),),
-                   IconButton(
-                    icon: Icon(Icons.help,size: 80,color:  Colors.white,),
-                    onPressed: () {
-                     
-                    }, 
-                     ),
-                 ],
-               ),
-                           
-             ),
+            // Figma Flutter Generator Androidcompact1Widget - FRAME
+      
            
-          
-          ],
-           
-           
-           ),
+           ])
             
          
     );
