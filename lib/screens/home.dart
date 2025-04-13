@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:startup_chatbot/screens/drawer.dart';
+import 'package:startup_chatbot/services/ChatService.dart';
 import 'package:startup_chatbot/services/recordservice.dart';
 import 'package:uuid/uuid.dart';
 import 'package:lottie/lottie.dart';
@@ -16,13 +17,15 @@ class _MyHomePageState extends State<MyHomePage> {
   bool newchatvisible = false;
   bool animationapear = false;
   bool pemisionrequest = false;
-   String txtinputforion = '';
+  String txtinputforion = '';
+  ChatService chatsevice = ChatService();
   final List<types.Message> _messages = [];
   final types.User _user = const types.User(id: "user_id");
   final types.User _bot = const types.User(id: "bot_id");
   final TextEditingController _textController = TextEditingController();
   final Rec_service rec_service = Rec_service();
   final String text = '';
+  String respond = '';
   void handlesendpressed(types.PartialText message) async {
     final newMessage = types.TextMessage(
       id: Uuid().v4(),
@@ -32,18 +35,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     setState(() {
       _messages.insert(0, newMessage);
+      animationapear = true;
     });
+    respond = await chatsevice.sendMessage(message.text);
     Future.delayed(Duration(seconds: 1), () {
       final botMessage = types.TextMessage(
         id: Uuid().v4(),
         author: _bot,
-        text:
-            "Hello to startup chatbot: how can I help you to so you can test this as weel as yo  like you know to  ttol many word that all for testing you know ",
+        text: respond,
 
         createdAt: DateTime.now().millisecondsSinceEpoch,
       );
       setState(() {
         _messages.insert(0, botMessage);
+        animationapear = false;
       });
     });
   }
@@ -112,42 +117,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Startup ',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-              ),
-            ),
-            Builder(
-              // Wrap GestureDetector with Builder
-              builder:
-                  (BuildContext context) => GestureDetector(
-                    child: Image.asset(
-                      'assets/startup.png',
-                      height: 60,
-                      width: 90,
-                    ),
-                    onTap: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  ),
-            ),
-
-            Text(
-              ' Chatbot',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-              ),
-            ),
-          ],
-        ),
+       toolbarHeight: 18,
+        
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 12, 51, 59),
       ),
@@ -159,6 +130,8 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(
               child: ListView.builder(
                 reverse: true,
+                shrinkWrap: true,
+                
                 itemCount: _messages.length,
                 itemBuilder: (context, index) {
                   final message = _messages[index];
@@ -318,9 +291,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onTap: () => _handleSubmit(_textController.text),
                       child: IconButton(
                         icon: Icon(
-                         txtinputforion==''
-                              ? Icons.mic
-                              : Icons.rocket,
+                          txtinputforion == '' ? Icons.mic : Icons.rocket,
                           color: Colors.white,
                         ),
                         onPressed: () => _handleSubmit(_textController.text),
