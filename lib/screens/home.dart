@@ -26,6 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final Rec_service rec_service = Rec_service();
   final String text = '';
   String respond = '';
+
   void handlesendpressed(types.PartialText message) async {
     final newMessage = types.TextMessage(
       id: Uuid().v4(),
@@ -43,7 +44,6 @@ class _MyHomePageState extends State<MyHomePage> {
         id: Uuid().v4(),
         author: _bot,
         text: respond,
-
         createdAt: DateTime.now().millisecondsSinceEpoch,
       );
       setState(() {
@@ -67,7 +67,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void newchat() {
     // Save the messages of the old discussion
-
     // Clear the current messages to start a new chat
     setState(() {
       _messages.clear();
@@ -113,195 +112,247 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: cuDrawer(), // Add this
-
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-       toolbarHeight: 18,
-        
-        centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 12, 51, 59),
-      ),
-
+      // Remove drawer to match the screenshot
       body: Container(
-        color: Color.fromARGB(255, 17, 27, 26),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                reverse: true,
-                shrinkWrap: true,
-                
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  final message = _messages[index];
-                  final isBot = message.author.id == _bot.id;
-
-                  return Align(
-                    alignment: isBot ? Alignment.center : Alignment.centerLeft,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 10,
+        // Create the dark blue gradient background
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backg.png'),
+            fit: BoxFit.cover, // 🔥 Makes it fullscreen
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              _messages.isEmpty
+                  ? Row(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(30),
+                        child: Text(
+                          ' Bienvenue \n dans  \n Notre App !   ',
+                          style: TextStyle(
+                            fontSize: 30,
+                            color: Color.fromARGB(255, 231, 231, 231),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color:
-                            isBot
-                                ? Color.fromARGB(255, 17, 27, 26)
-                                : const Color.fromARGB(255, 35, 44, 42),
-                        borderRadius: BorderRadius.circular(10),
-                        //  BorderRadius.only(bottomLeft: Radius.circular(10),
-                        //   bottomRight: Radius.circular(10) ) ,
+                      Container(
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/rocket.png',
+                            width: 90,
+                            height: 90,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
+                    ],
+                  )
+                  : Container(),
+              Expanded(
+                child: ListView.builder(
+                  reverse: true,
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  itemCount: _messages.length,
+                  itemBuilder: (context, index) {
+                    final message = _messages[index];
+                    final isBot = message.author.id == _bot.id;
 
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (isBot)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(Icons.rocket, color: Colors.white),
-                                Visibility(
-                                  visible: animationapear,
-                                  child: Lottie.asset('assets/wait.json'),
-                                ),
-                              ],
+                    if (isBot) {
+                      // Bot message layout
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 15),
+                        child: Container(
+                          width: double.infinity,
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.85,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              color: Color(0xFF00FF9B).withOpacity(0.3),
+                              width: 1,
                             ),
-
-                          if (isBot) SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              (message as types.TextMessage).text,
-                              style: TextStyle(
-                                color: isBot ? Colors.white : Colors.white,
-                                fontWeight:
-                                    isBot ? FontWeight.normal : FontWeight.bold,
-                                fontSize: isBot ? 20 : 17,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF00FF9B).withOpacity(0.1),
+                                blurRadius: 10,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                          padding: EdgeInsets.all(16),
+                          margin: EdgeInsets.only(right: 50),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        'assets/rocket.png',
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                (message as types.TextMessage).text,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 15),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: IntrinsicWidth(
+                            child: Container(
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 0.7,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.4),
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                  color: Color(0xFF00FF9B).withOpacity(0.3),
+                                  width: 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xFF00FF9B).withOpacity(0.1),
+                                    blurRadius: 10,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              padding: EdgeInsets.all(16),
+                              margin: EdgeInsets.only(left: 50),
+                              child: Text(
+                                (message as types.TextMessage).text,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            Visibility(
-              visible: newchatvisible,
-              child: SizedBox(
-                width: 170,
-                height: 65,
-
-                child: GestureDetector(
-                  onTap: () => newchat(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-
-                    child: Center(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Color.fromARGB(255, 17, 27, 26),
                         ),
+                      );
+                      // User message (minimal or not shown in the screenshot)
+                    }
+                  },
+                ),
+              ),
 
-                        padding: EdgeInsets.only(left: 8),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'New Chat',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                            ),
-
-                            IconButton(
-                              icon: Icon(Icons.add),
-                              color: Colors.white,
-                              onPressed: () => newchat(),
-                              iconSize: 20,
+              // Input field section
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: Color(0xFF00FF9B).withOpacity(0.3),
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFF00FF9B).withOpacity(0.1),
+                              blurRadius: 10,
+                              spreadRadius: 1,
                             ),
                           ],
                         ),
+                        child: TextField(
+                          // Remove the nested Expanded
+                          minLines: 1,
+                          maxLines: 5,
+                          controller: _textController,
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: 'Posez votre question',
+                            hintStyle: TextStyle(
+                              color: Color(0xFF00FF9B).withOpacity(0.5),
+                            ),
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    SizedBox(width: 10),
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.4),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Color(0xFF00FF9B).withOpacity(0.3),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFF00FF9B).withOpacity(0.1),
+                            blurRadius: 10,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: GestureDetector(
+                        onLongPress:
+                            () =>
+                                _textController.text.toString() == ''
+                                    ? rec_service.startListening(
+                                      _updateTextcontrol,
+                                    )
+                                    : _handleSubmit(_textController.text),
+                        onLongPressUp:
+                            () =>
+                                _textController.text.toString() == ''
+                                    ? rec_service.stopListening()
+                                    : _handleSubmit(_textController.text),
+
+                        child: IconButton(
+                          icon: Icon(
+                            _textController.text.toString() != ''
+                                ? Icons.send
+                                : Icons.mic,
+                            color: Color(0xFF00FF9B),
+                          ),
+                          onPressed: () => _handleSubmit(_textController.text),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.all(8),
-              color: Color.fromARGB(255, 12, 51, 59),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      constraints: BoxConstraints(
-                        maxHeight: 120, // Maximum height before scrolling
-                        minHeight: 40, // Minimum height
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.black12,
-                      ),
-                      child: TextField(
-                        style: TextStyle(color: Colors.white),
-                        controller: _textController,
-                        maxLines: null, // Allow multiple lines
-                        minLines: 1,
-                        textInputAction: TextInputAction.newline,
-                        decoration: InputDecoration(
-                          hintText: 'Ask your Question',
-                          hintStyle: TextStyle(color: Colors.white70),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 22,
-                          ),
-                          filled: true,
-                          fillColor: Colors.black12,
-                          isCollapsed: true,
-                        ),
-                        onSubmitted: (text) {
-                          if (text.trim().isNotEmpty) {
-                            handlesendpressed(types.PartialText(text: text));
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 73, 112, 120),
-                      shape: BoxShape.circle,
-                    ),
-                    child: GestureDetector(
-                      onLongPress:
-                          () async =>
-                              rec_service.startListening(_updateTextcontrol),
-                      onLongPressUp: rec_service.stopListening,
-                      onTap: () => _handleSubmit(_textController.text),
-                      child: IconButton(
-                        icon: Icon(
-                          txtinputforion == '' ? Icons.mic : Icons.rocket,
-                          color: Colors.white,
-                        ),
-                        onPressed: () => _handleSubmit(_textController.text),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

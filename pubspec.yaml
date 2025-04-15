@@ -57,7 +57,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/startup.png"
+  image_path: "assets/rocket.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -74,6 +74,8 @@ flutter:
     - assets/support_icon.png
     - assets/wait.json
     - assets/newagent-fske-c901e1732431.json
+    - assets/backg.png
+    - assets/rocket.png
     
   # To add assets to your application, add an assets section, like this:
   # assets:
