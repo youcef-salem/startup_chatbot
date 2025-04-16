@@ -6,41 +6,63 @@ class cuDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-    backgroundColor: Color.fromARGB(255, 12, 51, 59),
+   child: Scaffold(
+     body: Container(
      
-         
-           child: Column(
-           children: [
-            Padding(
-           padding: const EdgeInsets.only(top: 50,left: 15),
-           child: 
-             Row( children: [Text(
-                'Startup ',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                ),
-              ),
-           
-              Image.asset('assets/startup.png', height: 40, width: 40),
-              Text(
-                ' Chatbot',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                ),
-              )],),
-            
-           
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backg.png'),
+            fit: BoxFit.cover, // 🔥 Makes it fullscreen
+          ),
+        ),
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.transparent,
             ),
-            // Figma Flutter Generator Androidcompact1Widget - FRAME
-      
-           
-           ])
-            
-         
+          child: Row(
+            children: [
+              Text(
+                  'Menu',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+                 Container(
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/rocket.png',
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+            ],
+          ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      )
+     ),
+   ),
     );
   }
 }

@@ -113,6 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // Remove drawer to match the screenshot
+      drawer: cuDrawer(),
       body: Container(
         // Create the dark blue gradient background
         decoration: BoxDecoration(
