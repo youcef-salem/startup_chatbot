@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:startup_chatbot/screens/History.dart';
 import 'package:startup_chatbot/screens/about.dart';
 import 'package:startup_chatbot/screens/acount.dart';
 import 'package:startup_chatbot/screens/persoanl.dart';
@@ -103,7 +104,7 @@ final WebRoute webRoute = WebRoute();
             title: const Text('History',style: TextStyle(color: Colors.white),),
              iconColor: Colors.white,
             onTap: () {
-            
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>History()));
             },
           )
           ,

@@ -24,27 +24,53 @@ class About extends StatelessWidget {
               child: Column(
               
                 children: [
-                   Container(
+                   
+                  SizedBox(height:40),
+                  Text(
+                    "{About}",
+                    style: TextStyle(
+                      color: const Color.fromARGB(255, 225, 218, 218),
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      
+                    ),
+                  ),
+                  SizedBox(height:40),
+                  
+                  Container(
+                    decoration: BoxDecoration(
+                      color:  Color.fromARGB(0, 203, 210, 207),
+                      
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+padding: EdgeInsets.all(13),
+
+                    child: Text(
+                      "This is a chatbot that can help you , in your startup problems related and also PFE . ",
+                      style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255
+                      
+                      ), 
+                      
+                      fontSize: 20
+                      
+                      ),
+                      
+                      textAlign: TextAlign.center,
+
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Container(
                               decoration: BoxDecoration(shape: BoxShape.circle),
                               child: ClipOval(
                                 child: Image.asset(
                                   'assets/rocket.png',
-                                  width: 120,
-                                  height: 120,
+                                  width: 200,
+                                  height: 200,
                                   fit: BoxFit.cover,
                                 ),
                               ),
                             ),
-                  SizedBox(height: 20),
-                  
-                  Container(
-padding: EdgeInsets.all(13),
-                    child: Text(
-                      "This is a chatbot that can help you , in your startup problems related and also PFE . ",
-                      style: TextStyle(color: Colors.white, fontSize: 36),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
                 ],
               ),
             ),

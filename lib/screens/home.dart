@@ -4,7 +4,7 @@ import 'package:startup_chatbot/screens/drawer.dart';
 import 'package:startup_chatbot/services/ChatService.dart';
 import 'package:startup_chatbot/services/recordservice.dart';
 import 'package:uuid/uuid.dart';
-import 'package:lottie/lottie.dart';
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
