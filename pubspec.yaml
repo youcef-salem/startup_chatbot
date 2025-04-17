@@ -43,6 +43,9 @@ dependencies:
   permission_handler: ^11.0.1
   dialog_flowtter: ^0.3.3
   url_launcher: ^6.3.1
+  firebase_auth: ^5.5.2
+  shared_preferences: ^2.5.3
+  firebase_core: ^3.13.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

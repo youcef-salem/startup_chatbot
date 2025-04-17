@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:startup_chatbot/screens/about.dart';
 import 'package:startup_chatbot/screens/acount.dart';
+import 'package:startup_chatbot/screens/persoanl.dart';
 import 'package:startup_chatbot/services/Web_route.dart';
 
 class cuDrawer extends StatelessWidget {
@@ -85,7 +87,7 @@ final WebRoute webRoute = WebRoute();
             title: const Text('Personal Information ',style: TextStyle(color: Colors.white),),
              iconColor: Colors.white,
             onTap: () {
-              Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>Personal()));
             },
           ),
           
@@ -96,12 +98,21 @@ final WebRoute webRoute = WebRoute();
             onTap: () {
               webRoute.launchWebsite(webRoute.routes['contact']!);
             },
+          ),ListTile(
+            leading: const Icon(Icons.history),
+            title: const Text('History',style: TextStyle(color: Colors.white),),
+             iconColor: Colors.white,
+            onTap: () {
+            
+            },
           )
-          ,ListTile(
+          ,
+          ListTile(
             leading: const Icon(Icons.question_mark_rounded),
             title: const Text('About App ',style: TextStyle(color: Colors.white),),
              iconColor: Colors.white,
             onTap: () {
+               Navigator.push(context, MaterialPageRoute(builder: (context) =>About()));
             
             },
           ),
