@@ -1,10 +1,12 @@
+import 'package:dialog_flowtter/dialog_flowtter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:provider/provider.dart';
+import 'package:startup_chatbot/Widget/snackbare.dart';
 import 'package:startup_chatbot/screens/drawer.dart';
 import 'package:startup_chatbot/services/ChatService.dart';
 import 'package:startup_chatbot/services/recordservice.dart';
 import 'package:uuid/uuid.dart';
-
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -109,8 +111,20 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void Snackshow(BuildContext context, bool show) {
+    if (show) {
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(CustumSnackbare(context: context).show());
+    } else {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final rec_serv = Provider.of<Rec_service>(context);
+
     return Scaffold(
       // Remove drawer to match the screenshot
       drawer: cuDrawer(),
@@ -268,7 +282,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
               // Input field section
               Padding(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.only(
+                  left: 15,
+                  right: 15,
+                  bottom: 16,
+                  top: 3,
+                ),
                 child: Row(
                   children: [
                     Expanded(
@@ -306,48 +325,70 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     SizedBox(width: 10),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.4),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Color(0xFF00FF9B).withOpacity(0.3),
-                          width: 1,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFF00FF9B).withOpacity(0.1),
-                            blurRadius: 10,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: GestureDetector(
-                        onLongPress:
-                            () =>
-                                _textController.text.toString() == ''
-                                    ? rec_service.startListening(
-                                      _updateTextcontrol,
-                                    )
-                                    : _handleSubmit(_textController.text),
-                        onLongPressUp:
-                            () =>
-                                _textController.text.toString() == ''
-                                    ? rec_service.stopListening()
-                                    : _handleSubmit(_textController.text),
-
-                        child: IconButton(
-                          icon: Icon(
-                            _textController.text.toString() != ''
-                                ? Icons.send
-                                : Icons.mic,
-                            color: Color(0xFF00FF9B),
-                          ),
-                          onPressed: () => _handleSubmit(_textController.text),
-                        ),
-                      ),
+                    Consumer<Rec_service>(
+                      builder: (
+                        BuildContext context,
+                        Rec_service value,
+                        Widget? child,
+                      ) {
+                        return Column(
+                          children: [
+                            Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.4),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Color(0xFF00FF9B).withOpacity(0.3),
+                                  width: 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xFF00FF9B).withOpacity(0.1),
+                                    blurRadius: 10,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child: GestureDetector(
+                                onLongPress: () {
+                                  if (_textController.text.isEmpty) {
+                                    value.startListening(_updateTextcontrol);
+                                    Snackshow(
+                                      context,
+                                      true,
+                                    ); // Show Snackbar when starting to listen
+                                  } else {
+                                    _handleSubmit(_textController.text);
+                                  }
+                                },
+                                onLongPressUp: () {
+                                  if (_textController.text.isEmpty) {
+                                    value.stopListening();
+                                    Snackshow(
+                                      context,
+                                      false,
+                                    ); // Hide Snackbar when stopping
+                                  } else {
+                                    _handleSubmit(_textController.text);
+                                  }
+                                },
+                                child: IconButton(
+                                  icon: Icon(
+                                    _textController.text.isNotEmpty
+                                        ? Icons.send
+                                        : Icons.mic,
+                                    color: Color(0xFF00FF9B),
+                                  ),
+                                  onPressed:
+                                      () => _handleSubmit(_textController.text),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
