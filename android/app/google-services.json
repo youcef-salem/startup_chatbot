@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "843360209866",
+    "project_id": "startupchatbot-65ee0",
+    "storage_bucket": "startupchatbot-65ee0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843360209866:android:ce9492e1027534846fdd33",
+        "android_client_info": {
+          "package_name": "com.dol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "843360209866-n2njfqoasc36h0oeoe4fqsves1gho3vb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1_1hxSLWsHDnTRjXGBKfp0Duh97kIBUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "843360209866-n2njfqoasc36h0oeoe4fqsves1gho3vb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "843360209866-6b3jlgufp3ve273ouksijntmbb22vh1h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.startupChatbot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843360209866:android:51344b71e1bd40716fdd33",
+        "android_client_info": {
+          "package_name": "com.example.startup_chatbot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "843360209866-n2njfqoasc36h0oeoe4fqsves1gho3vb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1_1hxSLWsHDnTRjXGBKfp0Duh97kIBUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "843360209866-n2njfqoasc36h0oeoe4fqsves1gho3vb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "843360209866-6b3jlgufp3ve273ouksijntmbb22vh1h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.startupChatbot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
