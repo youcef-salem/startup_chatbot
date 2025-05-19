@@ -7,47 +7,33 @@ class Auth with ChangeNotifier {
   final FirebaseAuth fireauth = FirebaseAuth.instance;
   User? get curent_user => fireauth.currentUser;
   bool isLoggedIn = false;
-SaveData saveData = SaveData();
+  SaveData saveData = SaveData();
+
   // Sign in method with error handling
   Future<UserCredential?> signIn({
     required String email,
     required String password,
   }) async {
     try {
-      // Remove setPersistence as it's not needed for mobile
       final credential = await fireauth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      saveData.saveData('uid', credential.user!.uid);
-      saveData.saveData('email', credential.user!.email!);
-      saveData.saveData('displayName', credential.user!.displayName ?? '');
-      saveData.saveData('isLoggedIn', true.toString());
-      // Optionally save the token if needed
-      String? token = await credential.user?.getIdToken();
-      if (token != null) {
-        saveData.saveData('token', token);
-      }
- 
-
-      // Store login state in SharedPreferences
-      
-
       isLoggedIn = true;
       notifyListeners();
       return credential;
     } on FirebaseAuthException catch (e) {
-      print('Firebase Auth Error Code: ${e.code}'); // Debug print
+      print('Code d\'erreur Firebase: ${e.code}');
       if (e.code == 'user-not-found') {
-        throw 'No user found for that email.';
+        throw 'Aucun utilisateur trouvé avec cet email.';
       } else if (e.code == 'wrong-password') {
-        throw 'Wrong password provided for that user.';
+        throw 'Mot de passe incorrect.';
       } else if (e.code == 'invalid-email') {
-        throw 'Invalid email format.';
+        throw 'Format d\'email invalide.';
       } else if (e.code == 'invalid-credential') {
-        throw 'Authentication failed. Please check your credentials.';
+        throw 'Échec de l\'authentification. Veuillez vérifier vos identifiants.';
       }
-      throw e.message ?? 'An error occurred during sign in';
+      throw e.message ?? 'Une erreur s\'est produite lors de la connexion';
     }
   }
 
@@ -58,7 +44,6 @@ SaveData saveData = SaveData();
     isLoggedIn = false;
     notifyListeners();
   }
-  
 
   // Check if user is authenticated
   Future<bool> isAuthenticated() async {
@@ -70,6 +55,5 @@ SaveData saveData = SaveData();
     } else {
       return false;
     }
-   
   }
 }

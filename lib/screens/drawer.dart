@@ -37,7 +37,7 @@ final WebRoute webRoute = WebRoute();
                 
                     
                     Text(
-                        'Menu',
+                        'Menue',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 30,
@@ -77,7 +77,7 @@ final WebRoute webRoute = WebRoute();
           ),
          ListTile(
             leading: const Icon(Icons.person),
-            title: const Text('Acount',style: TextStyle(color: Colors.white),),
+            title: const Text('compte ',style: TextStyle(color: Colors.white),),
              iconColor: Colors.white,
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => Acount()));
@@ -94,23 +94,32 @@ final WebRoute webRoute = WebRoute();
           
           ListTile(
             leading: const Icon(Icons.support_agent),
-            title: const Text('Contact Us ',style: TextStyle(color: Colors.white),),
+            title: const Text('Contact startup ',style: TextStyle(color: Colors.white),),
              iconColor: Colors.white,
             onTap: () {
               webRoute.launchWebsite(webRoute.routes['contact']!);
             },
           ),ListTile(
             leading: const Icon(Icons.history),
-            title: const Text('History',style: TextStyle(color: Colors.white),),
+            title: const Text('Historique',style: TextStyle(color: Colors.white),),
              iconColor: Colors.white,
             onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) =>History()));
             },
           )
           ,
+           ListTile(
+            leading: const Icon(Icons.inbox),
+            title: const Text('contact developeure  ',style: TextStyle(color: Colors.white),),
+             iconColor: Colors.white,
+            onTap: () {
+               Navigator.push(context, MaterialPageRoute(builder: (context) =>About()));
+            
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.question_mark_rounded),
-            title: const Text('About App ',style: TextStyle(color: Colors.white),),
+            title: const Text('application infromation  ',style: TextStyle(color: Colors.white),),
              iconColor: Colors.white,
             onTap: () {
                Navigator.push(context, MaterialPageRoute(builder: (context) =>About()));

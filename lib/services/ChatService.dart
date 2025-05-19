@@ -31,12 +31,12 @@ class ChatService {
         queryInput: QueryInput(text: TextInput(text: message)),
       );
 
-      if (response.message == null) return "Sorry, I don't understand.";
+      if (response.message == null) return "j ai pas de reponse";
 
-      return response.message?.text?.text?[0] ?? "No response";
+      return response.message?.text?.text?[0] ?? "il ya pas de reponse";
     } catch (e) {
-      print('Error sending message: $e');
-      return "Sorry, there was an error processing your message.";
+      print('Error de l envoi de  message: $e');
+      return "'Error de commpredre le   message";
     }
   }
 
