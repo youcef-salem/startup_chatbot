@@ -13,23 +13,28 @@ class _HistoryState extends State<History> {
   void _addTestMessages() {
     setState(() {
       _messages.addAll([
-        types.TextMessage(author: _user, id: '1', text: 'Helloay?'),
+       
         types.TextMessage(
           author: _bot,
           id: '1',
-          text: 'Hello! How can I help you today?',
+          text: 'bonjour  ',
         ),
         types.TextMessage(
           author: _user,
           id: '2',
-          text: 'I have a question about startups',
+          text: ' bonjour comment je peux vous aider ?',  
         ),
         types.TextMessage(
           author: _bot,
           id: '3',
           text:
-              'Of course! I\'d be happy to help you with any startup-related questions.',
-        ),
+              'donc je veut poser une question sur le domain de  startup',
+        ),types.TextMessage(
+          author: _bot,
+          id: '3',
+          text:
+              'oui tu peux poser ta question',
+        )
       ]);
     });
   }
