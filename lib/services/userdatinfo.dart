@@ -6,36 +6,32 @@ import 'package:startup_chatbot/services/save_data.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
- 
 
-  
-
-  Future<Map<String, dynamic>?> getUserByUuid(String uuid) async {
+  Future<Map<String, dynamic>?> getUserByUuid(String uid) async {
     try {
-      // Check if user is authenticated
       final currentUser = FirebaseAuth.instance.currentUser;
-     
       if (currentUser == null) {
         throw Exception('Not authenticated. Please sign in first.');
       }
 
-      print('Attempting to fetch user with UUID: $uuid'); // Debug log
-      print('Current user ID: ${currentUser.uid}'); // Debug log
+      print('Attempting to fetch user with UID: $uid'); // Debug log
 
-      final docSnapshot = await _firestore.collection('Users').doc(uuid).get();
+      final querySnapshot =
+          await _firestore
+              .collection('Users')
+              .where('uid', isEqualTo: uid)
+              .get();
 
-      if (!docSnapshot.exists) {
-        print('Document does not exist for UUID: $uuid');
+      if (querySnapshot.docs.isEmpty) {
+        print('No document found for UID: $uid');
         return null;
       }
 
-      return docSnapshot.data();
-    } on FirebaseException catch (e) {
-      print('Firebase error: ${e.code} - ${e.message} + ${uuid}');
-      throw Exception('Failed to fetch user data: ${e.message}');
+      print('Found user data: ${querySnapshot.docs.first.data()}'); // Debug log
+      return querySnapshot.docs.first.data();
     } catch (e) {
-      print('Unexpected error: $e');
-      throw Exception('An unexpected error occurred');
+      print('Error getting user data: $e');
+      throw e;
     }
   }
 

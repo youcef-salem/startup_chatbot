@@ -13,10 +13,10 @@ class SaveData with ChangeNotifier {
     _isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     notifyListeners();
   }
-  
-  Future<void> getUuid(String uid ) async {
+
+  Future<String?> getUuid(String key) async {
     final prefs = await SharedPreferences.getInstance();
-    uid = prefs.getString('uid').toString();
+    return prefs.getString('uid');
   }
 
   Future<void> setBoolData(bool value) async {
@@ -32,7 +32,7 @@ class SaveData with ChangeNotifier {
   }
 
   Future<void> saveData(String key, String value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     await prefs.setString(key, value);
     notifyListeners();
   }
@@ -40,7 +40,6 @@ class SaveData with ChangeNotifier {
   Future<String?> getData(String key) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(key);
-  
   }
 
   Future<void> removeData(String key) async {
@@ -72,9 +71,10 @@ class SaveData with ChangeNotifier {
       notifyListeners();
     }
   }
+
   Future<void> remove_auth() async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     await prefs.remove('uid');
     await prefs.remove('email');
     await prefs.remove('displayName');

@@ -30,38 +30,32 @@ class _PersonalState extends State<Personal> {
     _loadUserData();
   }
 
-  Future<void> _loadUserData( ) async {
-    String perm = "permanent";
+  Future<void> _loadUserData() async {
     try {
-      final auth = Provider.of<Auth>(context, listen: false);
       final sharedData = Provider.of<SaveData>(context, listen: false);
 
-      // Check if user is signed in
-      if (sharedData.getBoolData() == false) {
-        throw Exception('Please sign in first');
-      }
-      sharedData.getUuid(perm);
-      print('User is signed in${sharedData.getData('email')}' ); // Debug log
+      // Get stored UID
+      final storedUid = await sharedData.getData('uid');
+      print('Stored UID: $storedUid'); // Debug log
 
-      final String  uuid ="f7Y418kLmSX9DoGYDIFS";
-      print('UUID       bbbbb : $uuid'); // Debug log
-      if (uuid == null) {
-        throw Exception('UUID not found');
-      }
+    
 
       final userService = UserService();
-      final userData = await userService.getUserByUuid(uuid);
+      final userData = await userService.getUserByUuid(
+        'x1d2QAuERRYHksBsHXszdcW8CRt2'
+      );
 
       if (userData != null) {
         setState(() {
           name = userData['name'] ?? '';
-          email =  userData['email'] ?? '';
+          email =
+              userData['email'] ?? ''; // Note the colon to match Firebase field
           address = userData['address'] ?? '';
           phone = userData['phone'] ?? '';
         });
       }
     } catch (e) {
-     print('Error loading user data: $e');
+      print('Error loading user data: $e');
     }
   }
 
@@ -86,8 +80,6 @@ class _PersonalState extends State<Personal> {
 
   @override
   Widget build(BuildContext context) {
-   
-   
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -146,7 +138,7 @@ class _PersonalState extends State<Personal> {
                     children: [
                       buildInfoRow(Icons.person, "Nom", name),
                       buildDivider(),
-                      buildInfoRow(Icons.email, "Gmail", email ),
+                      buildInfoRow(Icons.email, "Gmail", email),
                       buildDivider(),
                       buildInfoRow(Icons.location_on, "Adresse", address),
                       buildDivider(),

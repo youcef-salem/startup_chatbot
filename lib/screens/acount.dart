@@ -161,6 +161,7 @@ class _AcountState extends State<Acount> {
             if (credential != null) {
               await sharedData.setBoolData(true);
               await sharedData.saveData('email', emailController.text.trim());
+              
               await sharedData.saveData(
                 'password',
                 passwordController.text.trim(),
