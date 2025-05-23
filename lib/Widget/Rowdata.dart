@@ -17,24 +17,25 @@ class Rowdata extends StatelessWidget {
             height: 85,
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.white, width: 2),
+           
               
               color: Colors.transparent,
             ),
-            child: Text(rec.toString(),style: TextStyle(color: Colors.white, fontSize: 20),),
+            child: Text(rec.toString(),style: TextStyle(color: const Color.fromARGB(255, 7, 3, 3), fontSize: 20),),
       
           ), Container(
-            width: 180,
+            width: 120,
             height: 85,
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.white, width: 2),
+           
               
               color: Colors.transparent,
             ),
-            child: Text(data.toString(),style: TextStyle(color: Colors.white,fontSize: 20)),
+            child: Text(data.toString(),style: TextStyle(color: const Color.fromARGB(255, 12, 7, 7), fontSize: 20),),
       
           )
+         
       
         ],
      

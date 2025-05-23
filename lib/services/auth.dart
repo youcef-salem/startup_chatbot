@@ -4,10 +4,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:startup_chatbot/services/save_data.dart';
 
 class Auth with ChangeNotifier {
-  final FirebaseAuth fireauth = FirebaseAuth.instance;
+  final  FirebaseAuth fireauth = FirebaseAuth.instance;
   User? get curent_user => fireauth.currentUser;
   bool isLoggedIn = false;
   SaveData saveData = SaveData();
+
+  // Initialize auth state from SharedPreferences
+  Future<void> initAuthState() async {
+    final prefs = await SharedPreferences.getInstance();
+    isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    notifyListeners();
+  }
 
   // Sign in method with error handling
   Future<UserCredential?> signIn({
@@ -19,6 +26,12 @@ class Auth with ChangeNotifier {
         email: email,
         password: password,
       );
+
+      // Save auth state and user email
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('userEmail', email);
+
       isLoggedIn = true;
       notifyListeners();
       return credential;
@@ -39,21 +52,31 @@ class Auth with ChangeNotifier {
 
   // Sign out method
   Future<void> signOut() async {
-    // Implement sign-out logic here
     await fireauth.signOut();
+
+    // Clear stored auth data
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
     isLoggedIn = false;
     notifyListeners();
   }
 
   // Check if user is authenticated
   Future<bool> isAuthenticated() async {
-    // Implement authentication check logic here
-    if (fireauth.currentUser != null) {
+    final prefs = await SharedPreferences.getInstance();
+    final storedEmail = prefs.getString('userEmail');
+
+    if (fireauth.currentUser != null && storedEmail != null) {
       isLoggedIn = true;
       notifyListeners();
       return true;
-    } else {
-      return false;
     }
+
+    // Clear stored data if Firebase auth is invalid
+    await prefs.clear();
+    isLoggedIn = false;
+    notifyListeners();
+    return false;
   }
 }

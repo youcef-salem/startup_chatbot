@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 🧑 USERS: Allow read for any authenticated user, but only owner can write
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // 🚀 STARTUP IDEAS: 
+    // - Public read access (visible to all users)
+    // - Only signed-in users can create ideas
+    // - Only the owner can update or delete their idea
+    match /startupIdeas/{ideaId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && request.auth.uid == resource.data.ownerId;
+    }
+
+    // 💡 EXAMPLES: Same rules as startupIdeas
+    match /examples/{exampleId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && request.auth.uid == resource.data.ownerId;
+    }
+
+    // 🎓 FORMATIONS: Same rules as startupIdeas
+    match /formations/{formationId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && request.auth.uid == resource.data.ownerId;
+    }
+
+    // 🛑 DEFAULT DENY for all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ✅ HELPER FUNCTION
+    function isSignedIn() {
+      return request.auth != null;
+    }
+  }
+}
