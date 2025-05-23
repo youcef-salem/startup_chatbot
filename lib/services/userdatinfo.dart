@@ -6,70 +6,38 @@ import 'package:startup_chatbot/services/save_data.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<Map<String, dynamic>?> getUserByUuid(String uid) async {
     try {
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser == null) {
-        throw Exception('Not authenticated. Please sign in first.');
-      }
-
       print('Attempting to fetch user with UID: $uid'); // Debug log
 
-      final querySnapshot =
+      // Get the authenticated user's UID
+      final currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        throw Exception('Not authenticated');
+      }
+
+      // Query using the document ID directly instead of 'uid:' field
+      final docSnapshot =
           await _firestore
               .collection('Users')
-              .where('uid', isEqualTo: uid)
+              .where(
+                'uid', // Use the field name 'uid' instead of 'uid:'
+                isEqualTo: currentUser.uid,
+              ) // Use the Firebase Auth UID as document ID
               .get();
-
-      if (querySnapshot.docs.isEmpty) {
-        print('No document found for UID: $uid');
-        return null;
-      }
-
-      print('Found user data: ${querySnapshot.docs.first.data()}'); // Debug log
-      return querySnapshot.docs.first.data();
-    } catch (e) {
-      print('Error getting user data: $e');
-      throw e;
-    }
-  }
-
-  // Alternative: If you know the document ID matches the UUID
-  Future<Map<String, dynamic>?> getUserByDocId(String uuid) async {
-    try {
-      // Direct document reference if the document ID is the UUID
-      DocumentSnapshot documentSnapshot =
-          await _firestore.collection('Users').doc(uuid).get();
-
-      if (documentSnapshot.exists) {
-        return documentSnapshot.data() as Map<String, dynamic>;
+if (docSnapshot.docs.isNotEmpty) {
+        final userData = docSnapshot.docs.first.data();
+        print('User data fetched successfully: $userData'); // Debug log
+        return userData;
       } else {
-        print('No user found with document ID: $uuid');
+        print('No user found with UID: $uid'); // Debug log
         return null;
       }
     } catch (e) {
-      print('Error getting user by document ID: $e');
-      throw e;
-    }
-  }
-
-  // Example method to demonstrate data fetching
-  Future<void> fetchAndHandleUserData(String uuid) async {
-    try {
-      // Using the first method (by UUID)
-      final userData = await getUserByUuid(uuid);
-      if (userData != null) {
-        // Access specific fields from userData
-        final String? name = userData['name'];
-        final String? email = userData['email'];
-        final String? address = userData['address'];
-        final String? phone = userData['phone'];
-
-        // Handle the data as needed
-      }
-    } catch (e) {
-      print('Error fetching user data: $e');
+      print('Error fetching user data: $e'); // Debug log
+      return null;
     }
   }
 }

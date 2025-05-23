@@ -80,6 +80,8 @@ class cuDrawer extends StatelessWidget {
                         iconColor: Colors.white,
                         onTap: () {
                           sharedData.setBoolData(false);
+                          sharedData.removeData('uid');
+                          
                           sharedData.remove_auth(); 
 
                           Navigator.pop(context);

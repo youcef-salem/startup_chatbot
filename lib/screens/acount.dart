@@ -158,16 +158,21 @@ class _AcountState extends State<Acount> {
               email: emailController.text.trim(),
               password: passwordController.text.trim(),
             );
-            if (credential != null) {
+            if (credential != null && credential.user != null) {
               await sharedData.setBoolData(true);
               await sharedData.saveData('email', emailController.text.trim());
-              
+              await sharedData.saveData(
+                'uid',
+                credential.user!.uid,
+              ); // Store Firebase Auth UID
+              print("Firebase Auth UID: ${credential.user!.displayName}"); // Debug log
+                print('Creation Time: ${credential.user!.metadata.creationTime}');
+
               await sharedData.saveData(
                 'password',
                 passwordController.text.trim(),
               );
-              await sharedData.saveData('uid', credential.user!.uid);
-              print( "this is credential   ${credential.user!.uid}");
+              print("this is credential   ${credential.user!.uid}");
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

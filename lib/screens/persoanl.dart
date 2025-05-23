@@ -33,23 +33,21 @@ class _PersonalState extends State<Personal> {
   Future<void> _loadUserData() async {
     try {
       final sharedData = Provider.of<SaveData>(context, listen: false);
-
-      // Get stored UID
       final storedUid = await sharedData.getData('uid');
       print('Stored UID: $storedUid'); // Debug log
 
-    
+      if (storedUid == null) {
+        
+        throw Exception('No UID stored');
+      }
 
       final userService = UserService();
-      final userData = await userService.getUserByUuid(
-        'x1d2QAuERRYHksBsHXszdcW8CRt2'
-      );
+      final userData = await userService.getUserByUuid(storedUid);
 
       if (userData != null) {
         setState(() {
           name = userData['name'] ?? '';
-          email =
-              userData['email'] ?? ''; // Note the colon to match Firebase field
+          email = userData['email'] ?? ''; // Note the colon
           address = userData['address'] ?? '';
           phone = userData['phone'] ?? '';
         });
