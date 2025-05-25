@@ -59,17 +59,19 @@ class cuDrawer extends StatelessWidget {
               ),
               Column(
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.home),
-                    title: const Text(
-                      'Home',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    iconColor: Colors.white,
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+                    ListTile(
+                     
+                      leading: const Icon(Icons.home),
+                      title: const Text(
+                        'Home',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      iconColor: Colors.white,
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      ),
+                    
                   sharedData.getBoolData() == true
                       ? ListTile(
                         leading: const Icon(Icons.logout),
@@ -88,6 +90,7 @@ class cuDrawer extends StatelessWidget {
                         },
                       )
                       : ListTile(
+                       
                         leading: const Icon(Icons.login),
                         title: const Text(
                           'Login',
@@ -120,16 +123,16 @@ class cuDrawer extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.support_agent),
                     title: const Text(
-                      'Contact startup ',
+                      'Contact startup Hall ',
                       style: TextStyle(color: Colors.white),
                     ),
                     iconColor: Colors.white,
                     onTap: () {
-                      webRoute.launchWebsite(webRoute.routes['contact']!);
+                      webRoute.launchWebsite('contact');
                     },
                   ),
                   ListTile(
-                    leading: const Icon(Icons.history),
+                    leading: const Icon(Icons.archive_rounded),
                     title: const Text(
                       'Historique',
                       style: TextStyle(color: Colors.white),
@@ -143,12 +146,17 @@ class cuDrawer extends StatelessWidget {
                     },
                   ),
                   ListTile(
-                    leading: const Icon(Icons.add),
+                    leading: const Icon(Icons.web),
                     title: const Text(
-                      'plus dinformations',  
+                      'Notre site ',  
                       style: TextStyle(color: Colors.white),
                     ),
-                    iconColor: Colors.white,),
+                    iconColor: Colors.white,
+                    onTap: () {
+                     WebRoute().launchWebsite('more');
+                    },
+                    
+                    ),
                   ListTile(
                     leading: const Icon(Icons.inbox),
                     title: const Text(
@@ -166,7 +174,7 @@ class cuDrawer extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.info),
                     title: const Text(
-                      'application infromation  ',
+                      ' infromation de l application ',
                       style: TextStyle(color: Colors.white),
                     ),
                     iconColor: Colors.white,

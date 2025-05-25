@@ -7,14 +7,14 @@ class CustumSnackbare extends StatelessWidget {
 
   SnackBar show() {
     return SnackBar(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 300),
+      margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 80),
       backgroundColor: Colors.black.withOpacity(0.7),
       duration: const Duration(
-        days: 365,
+       minutes: 3,
       ), // Long duration since we'll manually dismiss it
       content: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        
+     
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -23,7 +23,7 @@ class CustumSnackbare extends StatelessWidget {
          
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+             
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: Color(0xFF00FF9B).withOpacity(0.3)),
@@ -31,20 +31,13 @@ class CustumSnackbare extends StatelessWidget {
               child: Icon(Icons.mic, color: Color(0xFF00FF9B), size: 24),
             ),
             SizedBox(width: 16),
-            Text(
-              "Listening...",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+           
           ],
         ),
       ),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(150),
         side: BorderSide(color: Color(0xFF00FF9B).withOpacity(0.3), width: 1),
       ),
     );

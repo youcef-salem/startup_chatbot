@@ -1,4 +1,5 @@
 
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:provider/provider.dart';
@@ -206,6 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
@@ -220,7 +222,31 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 10),
+                                 
+                                TextButton(onPressed:
+                                  () {
+                                    FlutterClipboard.copy((message as types.TextMessage).text ).then(( value ) => print('copied'));
+                                  }
+                                 , 
+                                 child: 
+                                 Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.4),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Color(0xFF00FF9B).withOpacity(0.3),
+                                        width: 1,
+                                      ),
+                                      
+                                    ),
+                                   child: Icon(
+                                      Icons.copy,
+                                      color: Color.fromARGB(255, 222, 226, 225),
+                                    ),
+                                 )
+                                )
                                 ],
                               ),
                               SizedBox(height: 8),
