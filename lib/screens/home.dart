@@ -1,12 +1,13 @@
-
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:provider/provider.dart';
 import 'package:startup_chatbot/Widget/snackbare.dart';
+import 'package:startup_chatbot/model/conversation.dart';
 import 'package:startup_chatbot/screens/drawer.dart';
 import 'package:startup_chatbot/services/ChatService.dart';
 import 'package:startup_chatbot/services/recordservice.dart';
+import 'package:startup_chatbot/services/sql_manipulation.dart';
 import 'package:uuid/uuid.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -29,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final Rec_service rec_service = Rec_service();
   final String text = '';
   String respond = '';
+  SqlManipulation sqlManipulation = SqlManipulation();
 
   void handlesendpressed(types.PartialText message) async {
     final newMessage = types.TextMessage(
@@ -69,17 +71,41 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void newchat() {
-    // Save the messages of the old discussion
-    // Clear the current messages to start a new chat
+    // Create a copy of messages to iterate over
+    final messagesToSave = List<types.Message>.from(_messages);
+
+    // Save messages to database
+    for (var message in messagesToSave) {
+      if (message is types.TextMessage) {
+        sqlManipulation.InsertConversation(
+          ChatMessge(
+            id: message.id,
+            text: message.text,
+            author: message.author,
+          ),
+        );
+      }
+    }
+
+    // Clear messages after saving
     setState(() {
       _messages.clear();
+      newchatvisible = false;
     });
   }
 
   @override
   void dispose() {
-    _textController.dispose(); // Clean up controller
+    _textController.dispose();
+    sqlManipulation.dispose();
+     // Clean up controller
     super.dispose();
+  }
+
+  void updateicon() {
+    setState(() {
+      txtinputforion = _textController.text.toString();
+    });
   }
 
   @override
@@ -87,13 +113,8 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     rec_service.initilasation();
     _textController.addListener(updateicon);
+    sqlManipulation.initDatabase();
     // Initialize any necessary data or state here
-  }
-
-  void updateicon() {
-    setState(() {
-      txtinputforion = _textController.text.toString();
-    });
   }
 
   Future<void> _initSpeechService() async {
@@ -207,7 +228,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
@@ -222,31 +244,37 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                   ),
-                                 
-                                TextButton(onPressed:
-                                  () {
-                                    FlutterClipboard.copy((message as types.TextMessage).text ).then(( value ) => print('copied'));
-                                  }
-                                 , 
-                                 child: 
-                                 Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.4),
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Color(0xFF00FF9B).withOpacity(0.3),
-                                        width: 1,
+
+                                  TextButton(
+                                    onPressed: () {
+                                      FlutterClipboard.copy(
+                                        (message as types.TextMessage).text,
+                                      ).then((value) => print('copied'));
+                                    },
+                                    child: Container(
+                                      width: 30,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.4),
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Color(
+                                            0xFF00FF9B,
+                                          ).withOpacity(0.3),
+                                          width: 1,
+                                        ),
                                       ),
-                                      
+                                      child: Icon(
+                                        Icons.copy,
+                                        color: Color.fromARGB(
+                                          255,
+                                          222,
+                                          226,
+                                          225,
+                                        ),
+                                      ),
                                     ),
-                                   child: Icon(
-                                      Icons.copy,
-                                      color: Color.fromARGB(255, 222, 226, 225),
-                                    ),
-                                 )
-                                )
+                                  ),
                                 ],
                               ),
                               SizedBox(height: 8),
@@ -257,6 +285,23 @@ class _MyHomePageState extends State<MyHomePage> {
                                   fontSize: 18,
                                 ),
                               ),
+                              //new chat button
+                              if (newchatvisible)
+                                TextButton(
+                                  onPressed: () {
+                                    newchat();
+                                    setState(() {
+                                      newchatvisible = false;
+                                    });
+                                  },
+                                  child: Text(
+                                    'Nouvelle discussion',
+                                    style: TextStyle(
+                                      color: Color(0xFF00FF9B),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
                             ],
                           ),
                         ),

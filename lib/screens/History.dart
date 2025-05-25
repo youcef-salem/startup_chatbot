@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:startup_chatbot/model/conversation.dart';
+import 'package:startup_chatbot/services/sql_manipulation.dart';
 
 class History extends StatefulWidget {
   History({super.key});
@@ -9,47 +12,43 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
-  // Test messages for demonstration
-  void _addTestMessages() {
-    setState(() {
-      _messages.addAll([
-       
-        types.TextMessage(
-          author: _bot,
-          id: '1',
-          text: 'bonjour  ',
-        ),
-        types.TextMessage(
-          author: _user,
-          id: '2',
-          text: ' bonjour comment je peux vous aider ?',  
-        ),
-        types.TextMessage(
-          author: _bot,
-          id: '3',
-          text:
-              'donc je veut poser une question sur le domain de  startup',
-        ),types.TextMessage(
-          author: _bot,
-          id: '3',
-          text:
-              'oui tu peux poser ta question',
-        )
-      ]);
-    });
+  SqlManipulation sqlManipulation = SqlManipulation();
+  List<types.Message> _messages = [];
+  final types.User _user = const types.User(id: "user_id");
+  final types.User _bot = const types.User(id: "bot_id");
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMessages(); // Load messages when screen initializes
   }
 
-  final List<types.Message> _messages = [];
+  // Load messages from database
+  Future<void> _loadMessages() async {
+    try {
+      print('Loading messages from database...'); // Debug log
+      final messages = await sqlManipulation.getConversations();
+      print('Loaded ${messages.length} messages'); // Debug log
 
-  final types.User _user = const types.User(id: "user_id");
+      setState(() {
+        _messages = messages;
+      });
+    } catch (e) {
+      print('Error loading messages: $e');
+    }
+  }
 
-  final types.User _bot = const types.User(id: "bot_id");
+  // Refresh messages when tapped
+  void _refreshMessages() async {
+    await _loadMessages();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: GestureDetector(
-        onTap: () => _addTestMessages(),
+        onTap:
+            _refreshMessages, // Changed from _addTestMessages to _refreshMessages
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -57,14 +56,15 @@ class _HistoryState extends State<History> {
               fit: BoxFit.cover,
             ),
           ),
-          child: Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            itemCount: _messages.length,
+            itemBuilder: (context, index) {
+              final message = _messages[index];
+              if (message is types.TextMessage) {
+                // Add type check
                 final isBot = message.author.id == _bot.id;
-      
+
                 if (isBot) {
                   // Bot message layout
                   return Padding(
@@ -97,7 +97,9 @@ class _HistoryState extends State<History> {
                           Row(
                             children: [
                               Container(
-                                decoration: BoxDecoration(shape: BoxShape.circle),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
                                 child: ClipOval(
                                   child: Image.asset(
                                     'assets/rocket.png',
@@ -112,11 +114,11 @@ class _HistoryState extends State<History> {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            message is types.TextMessage
-                                ? message.text
-                                : 'Unsupported message type',
-                            style: TextStyle(color: Colors.white, fontSize: 18
-                            ,decoration: TextDecoration.none
+                            message.text,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              decoration: TextDecoration.none,
                             ),
                           ),
                         ],
@@ -151,13 +153,12 @@ class _HistoryState extends State<History> {
                           padding: EdgeInsets.all(16),
                           margin: EdgeInsets.only(left: 50),
                           child: Text(
-                            message is types.TextMessage
-                                ? message.text
-                                : 'Unsupported message type',
-                            style: TextStyle(color: Colors.white, fontSize: 18,
-                            decoration: TextDecoration.none
+                            message.text,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              decoration: TextDecoration.none,
                             ),
-                            
                           ),
                         ),
                       ),
@@ -165,8 +166,9 @@ class _HistoryState extends State<History> {
                   );
                   // User message (minimal or not shown in the screenshot)
                 }
-              },
-            ),
+              }
+              return Container(); // Return empty container for non-text messages
+            },
           ),
         ),
       ),
