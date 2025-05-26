@@ -44,17 +44,16 @@ class _MyHomePageState extends State<MyHomePage> {
       animationapear = true;
     });
     respond = await chatsevice.sendMessage(message.text);
-    Future.delayed(Duration(seconds: 1), () {
-      final botMessage = types.TextMessage(
-        id: Uuid().v4(),
-        author: _bot,
-        text: respond,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-      );
-      setState(() {
-        _messages.insert(0, botMessage);
-        animationapear = false;
-      });
+
+    final botMessage = types.TextMessage(
+      id: Uuid().v4(),
+      author: _bot,
+      text: respond,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+    );
+    setState(() {
+      _messages.insert(0, botMessage);
+      animationapear = false;
     });
   }
 
@@ -98,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     _textController.dispose();
     sqlManipulation.dispose();
-     // Clean up controller
+    // Clean up controller
     super.dispose();
   }
 
@@ -245,33 +244,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                                   ),
 
-                                  TextButton(
-                                    onPressed: () {
-                                      FlutterClipboard.copy(
-                                        (message as types.TextMessage).text,
-                                      ).then((value) => print('copied'));
-                                    },
-                                    child: Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.4),
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: Color(
-                                            0xFF00FF9B,
-                                          ).withOpacity(0.3),
-                                          width: 1,
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: ClipOval(
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.copy,
+                                          color: Color(0xFF00FF9B),
                                         ),
-                                      ),
-                                      child: Icon(
-                                        Icons.copy,
-                                        color: Color.fromARGB(
-                                          255,
-                                          222,
-                                          226,
-                                          225,
-                                        ),
+                                        onPressed: () {
+                                          FlutterClipboard.copy(
+                                            (message as types.TextMessage).text,
+                                          );
+                                        },
                                       ),
                                     ),
                                   ),

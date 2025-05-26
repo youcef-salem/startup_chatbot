@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:startup_chatbot/screens/History.dart';
 import 'package:startup_chatbot/screens/about.dart';
 import 'package:startup_chatbot/screens/acount.dart';
+import 'package:startup_chatbot/screens/contact.dart';
 import 'package:startup_chatbot/screens/persoanl.dart';
 import 'package:startup_chatbot/services/Web_route.dart';
 import 'package:startup_chatbot/services/save_data.dart';
@@ -167,7 +168,7 @@ class cuDrawer extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => About()),
+                        MaterialPageRoute(builder: (context) => Contact()),
                       );
                     },
                   ),
