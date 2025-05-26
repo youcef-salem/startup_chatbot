@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:startup_chatbot/Widget/rowcontact.dart';
 
 import 'package:startup_chatbot/services/save_data.dart';
 import 'package:startup_chatbot/services/userdatinfo.dart';
@@ -37,7 +38,6 @@ class _PersonalState extends State<Personal> {
       print('Stored UID: $storedUid'); // Debug log
 
       if (storedUid == null) {
-        
         throw Exception('No UID stored');
       }
 
@@ -119,6 +119,7 @@ class _PersonalState extends State<Personal> {
                   ),
                 ),
                 Container(
+               
                   margin: EdgeInsets.symmetric(horizontal: 20),
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -155,38 +156,43 @@ class _PersonalState extends State<Personal> {
   Widget buildInfoRow(IconData icon, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.teal, size: 28),
-          SizedBox(width: 15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
+      child:  Row(
+        
+          children: [
+            Icon(icon, color: Colors.teal, size: 28),
+            SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  
+                     Text(
+                      value,
+                      maxLines: 2,
+                      softWrap: true,
+                 overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                   
+                  ),
+                ],
               ),
-              SizedBox(height: 4),
-              Text(
-                value,
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      
     );
-  }
-
-  Widget buildDivider() {
-    return Divider(color: Colors.grey[300], thickness: 1, height: 1);
   }
 }

@@ -13,62 +13,82 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> {
   SqlManipulation sqlManipulation = SqlManipulation();
-  List<types.Message> _messages = [];
+  Map<String, List<types.Message>> _chatSessions = {};
+  String? _expandedChatId;
   final types.User _user = const types.User(id: "user_id");
   final types.User _bot = const types.User(id: "bot_id");
-final types.User _newchat = const types.User(id: "new_chat");
+  final types.User _newchat = const types.User(id: "new_chat");
+
   @override
   void initState() {
     super.initState();
-    _loadMessages(); // Load messages when screen initializes
+    _loadMessages();
   }
 
-  // Load messages from database
   Future<void> _loadMessages() async {
     try {
-      print('Loading messages from database...'); // Debug log
+      
       final messages = await sqlManipulation.getConversations();
-      print('Loaded ${messages.length} messages'); // Debug log
+     
+
+      // Group messages by chat sessions
+      final sessions = <String, List<types.Message>>{};
+      String? currentSessionId;
+      List<types.Message> currentSession = [];
+
+      for (var message in messages) {
+        if (message.author.id == _newchat.id) {
+          // If we find a new chat message, start a new session
+          if (currentSessionId != null) {
+            sessions[currentSessionId] = List.from(currentSession);
+          }
+          currentSessionId = message.id;
+          currentSession = [message];
+        } else {
+          currentSession.add(message);
+        }
+      }
+      // Add the last session
+      if (currentSessionId != null) {
+        sessions[currentSessionId] = List.from(currentSession);
+      }
 
       setState(() {
-        _messages = messages;
+        _chatSessions = sessions;
       });
     } catch (e) {
       print('Error loading messages: $e');
     }
   }
 
-  // Refresh messages when tapped
-  void _refreshMessages() async {
-    await _loadMessages();
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_messages.isEmpty) {
+    if (_chatSessions.isEmpty) {
       return Container(
-         decoration: BoxDecoration(
+        decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/backg.png'),
-            fit: BoxFit.cover, // 🔥 Makes it fullscreen
+            fit: BoxFit.cover,
           ),
         ),
-        //return  message  not recordesd text
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              ' pas de messages',
-              style: TextStyle(color: Colors.white, fontSize: 30
-             ,textBaseline: null, decoration: TextDecoration.none, fontWeight: FontWeight.bold, letterSpacing: 1.5, shadows: [
-                Shadow(
-                  color: Colors.black54,
-                  offset: Offset(2, 2),
-                  blurRadius: 5,
-                ),
-              ]
+              'pas de messages',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+                shadows: [
+                  Shadow(
+                    color: Colors.black54,
+                    offset: Offset(2, 2),
+                    blurRadius: 5,
+                  ),
+                ],
               ),
-              
             ),
             Container(
               margin: EdgeInsets.only(bottom: 30, top: 50),
@@ -99,6 +119,7 @@ final types.User _newchat = const types.User(id: "new_chat");
         ),
       );
     }
+
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -109,24 +130,25 @@ final types.User _newchat = const types.User(id: "new_chat");
             ),
           ),
           child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            itemCount: _messages.length,
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            itemCount: _chatSessions.length,
             itemBuilder: (context, index) {
-              final message = _messages[index];
-              if (message is types.TextMessage) {
-                // Add type check
-                final isBot = message.author.id == _bot.id;
-                final isUser = message.author.id == _user.id;
-                final isNewChat = message.author.id == _newchat.id;
-                if (isBot) {
-                  // Bot message layout
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 15),
+              final sessionId = _chatSessions.keys.elementAt(index);
+              final messages = _chatSessions[sessionId]!;
+              final isExpanded = sessionId == _expandedChatId;
+
+              return Column(
+                children: [
+                  // Chat Session Header
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _expandedChatId = isExpanded ? null : sessionId;
+                      });
+                    },
                     child: Container(
-                      width: double.infinity,
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.85,
-                      ),
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.4),
                         borderRadius: BorderRadius.circular(25),
@@ -142,139 +164,147 @@ final types.User _newchat = const types.User(id: "new_chat");
                           ),
                         ],
                       ),
-                      padding: EdgeInsets.all(16),
-                      margin: EdgeInsets.only(right: 50),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: ClipOval(
-                                  child: Image.asset(
-                                    'assets/rocket.png',
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                            ],
+                          Icon(
+                            isExpanded ? Icons.expand_less : Icons.expand_more,
+                            color: Colors.white,
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(width: 10),
                           Text(
-                            message.text,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              decoration: TextDecoration.none,
-                            ),
+                            'Chat Session ${index + 1}',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
                           ),
                         ],
                       ),
                     ),
-                  );
-                }  else if (isUser) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 15),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: IntrinsicWidth(
-                        child: Container(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.7,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(25),
-                            border: Border.all(
-                              color: Color(0xFF00FF9B).withOpacity(0.3),
-                              width: 1,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFF00FF9B).withOpacity(0.1),
-                                blurRadius: 10,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          padding: EdgeInsets.all(16),
-                         
-                          child: Text(
-                            message.text,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                  // User message (minimal or not shown in the screenshot)
-                }else if(isNewChat){
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 15, top: 15 ),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: IntrinsicWidth(
-                        child: Container(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.7,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(25),
-                            border: Border.all(
-                              color: Color(0xFF00FF9B).withOpacity(0.3),
-                              width: 1,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFF00FF9B).withOpacity(0.1),
-                                blurRadius: 10,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          padding: EdgeInsets.all(16),
-                         
-                          child: Text(
-                            message.text,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                } else {
-                  // Handle other message types if needed
-                  return SizedBox.shrink();
+                  ),
+                  // Chat Messages (only shown when expanded)
+                  if (isExpanded)
+                    ...messages.map((message) {
+                      if (message is types.TextMessage) {
+                        final isBot = message.author.id == _bot.id;
+                       
 
-                }
-              }
+                        // Your existing message UI code here
+                        return isBot
+                            ? _buildBotMessage(message)
+                            : _buildUserMessage(message);
+                      }
+                      return SizedBox.shrink();
+                    }).toList(),
+                ],
+              );
             },
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          sqlManipulation.delete(); 
-          _refreshMessages(); // Refresh messages after deletion
-          // Refresh messages on button press
+        onPressed: () async {
+          await sqlManipulation.delete();
+          _loadMessages();
         },
         backgroundColor: Color(0xFF00FF9B),
         child: Icon(Icons.delete_forever_rounded),
+      ),
+    );
+  }
+
+  Widget _buildBotMessage(types.TextMessage message) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 15),
+      child: Container(
+        width: double.infinity,
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.85,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.4),
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            color: Color(0xFF00FF9B).withOpacity(0.3),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xFF00FF9B).withOpacity(0.1),
+              blurRadius: 10,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        padding: EdgeInsets.all(16),
+        margin: EdgeInsets.only(right: 50),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(shape: BoxShape.circle),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/rocket.png',
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+              ],
+            ),
+            SizedBox(height: 8),
+            Text(
+              message.text,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                decoration: TextDecoration.none,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserMessage(types.TextMessage message) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 15),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: IntrinsicWidth(
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.7,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(25),
+              border: Border.all(
+                color: Color(0xFF00FF9B).withOpacity(0.3),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFF00FF9B).withOpacity(0.1),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            padding: EdgeInsets.all(16),
+            child: Text(
+              message.text,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                decoration: TextDecoration.none,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

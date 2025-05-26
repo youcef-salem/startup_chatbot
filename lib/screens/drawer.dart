@@ -35,7 +35,7 @@ class cuDrawer extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Menue',
+                        'Menu',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 30,
@@ -60,56 +60,56 @@ class cuDrawer extends StatelessWidget {
               ),
               Column(
                 children: [
-                    ListTile(
-                     
-                      leading: const Icon(Icons.home),
-                      title: const Text(
-                        'Home',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      iconColor: Colors.white,
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      ),
-                    
+                  ListTile(
+                   
+                    leading: const Icon(Icons.home),
+                    title: const Text(
+                    'Accueil',
+                    style: TextStyle(color: Colors.white),
+                    ),
+                    iconColor: Colors.white,
+                    onTap: () {
+                    Navigator.pop(context);
+                    },
+                    ),
+                  
                   sharedData.getBoolData() == true
-                      ? ListTile(
-                        leading: const Icon(Icons.logout),
-                        title: const Text(
-                          'Logout',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        iconColor: Colors.white,
-                        onTap: () {
-                          sharedData.setBoolData(false);
-                          sharedData.removeData('uid');
-                          
-                          sharedData.remove_auth(); 
+                    ? ListTile(
+                    leading: const Icon(Icons.logout),
+                    title: const Text(
+                      'Déconnexion',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    iconColor: Colors.white,
+                    onTap: () {
+                      sharedData.setBoolData(false);
+                      sharedData.removeData('uid');
+                      
+                      sharedData.remove_auth(); 
 
-                          Navigator.pop(context);
-                        },
-                      )
-                      : ListTile(
-                       
-                        leading: const Icon(Icons.login),
-                        title: const Text(
-                          'Login',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        iconColor: Colors.white,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Acount()),
-                          );
-                        },
-                      ),
+                      Navigator.pop(context);
+                    },
+                    )
+                    : ListTile(
+                     
+                    leading: const Icon(Icons.login),
+                    title: const Text(
+                      'Connexion',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    iconColor: Colors.white,
+                    onTap: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Acount()),
+                      );
+                    },
+                    ),
 
                   ListTile(
                     leading: const Icon(Icons.contact_page_rounded),
                     title: const Text(
-                      'Personal Information ',
+                      ' Information  Personnelle', 
                       style: TextStyle(color: Colors.white),
                     ),
                     iconColor: Colors.white,
@@ -161,7 +161,7 @@ class cuDrawer extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.inbox),
                     title: const Text(
-                      'contact developeure  ',
+                      '  Nos  contact  ',
                       style: TextStyle(color: Colors.white),
                     ),
                     iconColor: Colors.white,
@@ -175,7 +175,7 @@ class cuDrawer extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.info),
                     title: const Text(
-                      ' infromation de l application ',
+                      ' À Propos ',
                       style: TextStyle(color: Colors.white),
                     ),
                     iconColor: Colors.white,

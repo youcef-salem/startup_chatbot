@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
       handlesendpressed(types.PartialText(text: text));
       _textController.clear();
     }
-    if (_messages.length > 5) {
+    if (_messages.length >= 2) {
       setState(() {
         newchatvisible = true;
       });
@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
 sqlManipulation.InsertConversation(
           ChatMessge(
             id: '${Uuid().v4()}',
-            text: ' Nouvelle discussion  dans ${DateTime.now()}',
+            text: ' La  discussion  dans : ${DateTime.now() }',
             author: _newchat , // Placeholder for new chat,
           ),
         );
@@ -288,22 +288,7 @@ sqlManipulation.InsertConversation(
                                 ),
                               ),
                               //new chat button
-                              if (newchatvisible)
-                                TextButton(
-                                  onPressed: () {
-                                    newchat();
-                                    setState(() {
-                                      newchatvisible = false;
-                                    });
-                                  },
-                                  child: Text(
-                                    'Nouvelle discussion',
-                                    style: TextStyle(
-                                      color: Color(0xFF00FF9B),
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
+                              
                             ],
                           ),
                         ),
@@ -352,6 +337,22 @@ sqlManipulation.InsertConversation(
                   },
                 ),
               ),
+              if (newchatvisible)
+                                TextButton(
+                                  onPressed: () {
+                                    newchat();
+                                    setState(() {
+                                      newchatvisible = false;
+                                    });
+                                  },
+                                  child: Text(
+                                    'Nouvelle discussion',
+                                    style: TextStyle(
+                                      color: Color(0xFF00FF9B),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
 
               // Input field section
               Padding(
