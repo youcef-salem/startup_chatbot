@@ -26,6 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<types.Message> _messages = [];
   final types.User _user = const types.User(id: "user_id");
   final types.User _bot = const types.User(id: "bot_id");
+  final types.User _newchat = const types.User(id: "new_chat");
   final TextEditingController _textController = TextEditingController();
   final Rec_service rec_service = Rec_service();
   final String text = '';
@@ -62,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
       handlesendpressed(types.PartialText(text: text));
       _textController.clear();
     }
-    if (_messages.length > 4) {
+    if (_messages.length > 5) {
       setState(() {
         newchatvisible = true;
       });
@@ -72,10 +73,22 @@ class _MyHomePageState extends State<MyHomePage> {
   void newchat() {
     // Create a copy of messages to iterate over
     final messagesToSave = List<types.Message>.from(_messages);
-
+sqlManipulation.InsertConversation(
+          ChatMessge(
+            id: '${Uuid().v4()}',
+            text: ' Nouvelle discussion  dans ${DateTime.now()}',
+            author: _newchat , // Placeholder for new chat,
+          ),
+        );
     // Save messages to database
-    for (var message in messagesToSave) {
+    for (var message in messagesToSave.reversed) {
       if (message is types.TextMessage) {
+        if (message.author.id == _bot.id) {
+          // Only save bot messages
+          print('Saving message to database:  boot ${message.text}'); // Debug log
+        }else {
+          print('Saving user message to database: human ${message.text}'); // Debug log
+        }
         sqlManipulation.InsertConversation(
           ChatMessge(
             id: message.id,
@@ -85,6 +98,8 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
     }
+    
+
 
     // Clear messages after saving
     setState(() {

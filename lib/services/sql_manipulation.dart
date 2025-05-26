@@ -106,4 +106,32 @@ class SqlManipulation {
       _database = null;
     }
   }
+
+delete() async{
+    try {
+      final db = await database;
+      print('Deleting all conversations from database...'); // Debug log
+      await db.delete('conversation');
+      print('All conversations deleted successfully'); // Debug log
+    } catch (e) {
+      print('Error deleting conversations: $e');
+    }
+  }
+  Future<void> deleteConversation(String id) async {
+    try {
+      final db = await database;
+      print('Deleting conversation with id: $id'); // Debug log
+      await db.delete(
+        'conversation',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      print('Conversation deleted successfully'); // Debug log
+    } catch (e) {
+      print('Error deleting conversation: $e');
+    }
+  }
+
+
+
 }
