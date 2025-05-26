@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:startup_chatbot/model/conversation.dart';
@@ -107,7 +108,7 @@ class SqlManipulation {
     }
   }
 
-delete() async{
+  delete() async {
     try {
       final db = await database;
       print('Deleting all conversations from database...'); // Debug log
@@ -117,21 +118,30 @@ delete() async{
       print('Error deleting conversations: $e');
     }
   }
-  Future<void> deleteConversation(String id) async {
+
+  Future<void> deleteConversation(List<types.Message> mesages ) async {
     try {
       final db = await database;
-      print('Deleting conversation with id: $id'); // Debug log
-      await db.delete(
-        'conversation',
-        where: 'id = ?',
-        whereArgs: [id],
-      );
-      print('Conversation deleted successfully'); // Debug log
+      print('Deleting specific conversations from database...'); // Debug log
+
+      for (var message in mesages) {
+        print('Deleting message with id: ${message.id}'); // Debug log
+        await db.delete(
+          'conversation',
+          where: 'id = ?',
+          whereArgs: [message.id],
+        );
+      }
+      print('Specific conversations deleted successfully'); // Debug log
     } catch (e) {
-      print('Error deleting conversation: $e');
+      print('Error deleting specific conversations: $e');
     }
+
+
+
+
+
+
+
   }
-
-
-
 }

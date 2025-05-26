@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:startup_chatbot/model/conversation.dart';
 import 'package:startup_chatbot/services/sql_manipulation.dart';
 
@@ -25,11 +28,32 @@ class _HistoryState extends State<History> {
     _loadMessages();
   }
 
+  ondeleteConversation(String sessionId, List<types.Message> messages) async {
+    // Delete a conversation based on the provided IDs
+    try {
+      await sqlManipulation.deleteConversation(messages);
+      
+      // Remove from local state immediately
+      setState(() {
+        _chatSessions.remove(sessionId);
+        // If the deleted session was expanded, clear the expansion
+        if (_expandedChatId == sessionId) {
+          _expandedChatId = null;
+        }
+      });
+    } catch (e) {
+      print('Error deleting conversation: $e');
+      // Optionally show a snackbar or dialog to inform user of error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting conversation: $e')),
+      );
+    }
+  }
+
+ 
   Future<void> _loadMessages() async {
     try {
-      
       final messages = await sqlManipulation.getConversations();
-     
 
       // Group messages by chat sessions
       final sessions = <String, List<types.Message>>{};
@@ -81,6 +105,8 @@ class _HistoryState extends State<History> {
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
+               decoration: TextDecoration.none,
+                
                 shadows: [
                   Shadow(
                     color: Colors.black54,
@@ -89,6 +115,8 @@ class _HistoryState extends State<History> {
                   ),
                 ],
               ),
+            
+              
             ),
             Container(
               margin: EdgeInsets.only(bottom: 30, top: 50),
@@ -164,18 +192,50 @@ class _HistoryState extends State<History> {
                           ),
                         ],
                       ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            isExpanded ? Icons.expand_less : Icons.expand_more,
-                            color: Colors.white,
+                      child: Slidable(
+                        key: ValueKey(sessionId), // Use unique key for each slidable
+                        startActionPane: ActionPane(
+                          motion: const ScrollMotion(),
+                          dismissible: DismissiblePane(
+                            onDismissed: () {
+                              // Handle dismissal - remove immediately from UI
+                              ondeleteConversation(sessionId, messages);
+                            }
                           ),
-                          SizedBox(width: 10),
-                          Text(
-                            'Chat Session ${index + 1}',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          children: [
+                            SlidableAction(
+                              onPressed: (context) {
+                                ondeleteConversation(sessionId, messages);
+                              },
+                              backgroundColor: Color(0xFFFE4A49),
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                              label: 'Delete',
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ],
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Row(
+                            children: [
+                              Icon(
+                                isExpanded
+                                    ? Icons.expand_less
+                                    : Icons.expand_more,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'Chat Session ${index + 1}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -184,7 +244,6 @@ class _HistoryState extends State<History> {
                     ...messages.map((message) {
                       if (message is types.TextMessage) {
                         final isBot = message.author.id == _bot.id;
-                       
 
                         // Your existing message UI code here
                         return isBot
