@@ -426,28 +426,22 @@ sqlManipulation.InsertConversation(
                                 ],
                               ),
                               child: GestureDetector(
-                                onLongPress: () {
-                                  if (_textController.text.isEmpty) {
+                                  onLongPress: () {
                                     value.startListening(_updateTextcontrol);
                                     Snackshow(
                                       context,
                                       true,
                                     ); // Show Snackbar when starting to listen
-                                  } else {
-                                    _handleSubmit(_textController.text);
-                                  }
-                                },
-                                onLongPressUp: () {
-                                  if (_textController.text.isEmpty) {
+                                  },
+                                  onLongPressUp: () {
                                     value.stopListening();
                                     Snackshow(
                                       context,
                                       false,
-                                    ); // Hide Snackbar when stopping
-                                  } else {
-                                    _handleSubmit(_textController.text);
-                                  }
-                                },
+                                    ); // Ensure Snackbar hides when stopping
+                                  },
+                                
+                          
                                 child: IconButton(
                                   icon: Icon(
                                     _textController.text.isNotEmpty

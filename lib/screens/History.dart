@@ -32,7 +32,7 @@ class _HistoryState extends State<History> {
     // Delete a conversation based on the provided IDs
     try {
       await sqlManipulation.deleteConversation(messages);
-      
+
       // Remove from local state immediately
       setState(() {
         _chatSessions.remove(sessionId);
@@ -50,7 +50,6 @@ class _HistoryState extends State<History> {
     }
   }
 
- 
   Future<void> _loadMessages() async {
     try {
       final messages = await sqlManipulation.getConversations();
@@ -105,8 +104,8 @@ class _HistoryState extends State<History> {
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
-               decoration: TextDecoration.none,
-                
+                decoration: TextDecoration.none,
+
                 shadows: [
                   Shadow(
                     color: Colors.black54,
@@ -115,8 +114,6 @@ class _HistoryState extends State<History> {
                   ),
                 ],
               ),
-            
-              
             ),
             Container(
               margin: EdgeInsets.only(bottom: 30, top: 50),
@@ -193,19 +190,40 @@ class _HistoryState extends State<History> {
                         ],
                       ),
                       child: Slidable(
-                        key: ValueKey(sessionId), // Use unique key for each slidable
-                        startActionPane: ActionPane(
+                        key: ValueKey(sessionId),
+                        endActionPane: ActionPane(
                           motion: const ScrollMotion(),
-                          dismissible: DismissiblePane(
-                            onDismissed: () {
-                              // Handle dismissal - remove immediately from UI
-                              ondeleteConversation(sessionId, messages);
-                            }
-                          ),
                           children: [
                             SlidableAction(
-                              onPressed: (context) {
-                                ondeleteConversation(sessionId, messages);
+                              onPressed: (_) async {
+                                // Remove from local state first
+                                setState(() {
+                                  _chatSessions.remove(sessionId);
+                                  if (_expandedChatId == sessionId) {
+                                    _expandedChatId = null;
+                                  }
+                                });
+
+                                // Then delete from database
+                                try {
+                                  await ondeleteConversation(
+                                    sessionId,
+                                    messages,
+                                  );
+                                } catch (e) {
+                                  // If deletion fails, restore the session
+                                  setState(() {
+                                    _chatSessions[sessionId] = messages;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Failed to delete conversation',
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
                               },
                               backgroundColor: Color(0xFFFE4A49),
                               foregroundColor: Colors.white,
