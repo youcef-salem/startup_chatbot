@@ -28,6 +28,35 @@ Various Flutter packages:
   - `url_launcher`
   - `animated_text_kit`
 
+  
+##screenshots
+
+##Homepage
+<p float="left">
+  <img src="screenshots/p15.jpg" width="200"  height="400" title="Home - State 1" />
+  <img src="screenshots/p1.jpg" width="200"  height="400" title="Home - State 2" />
+  <img src="screenshots/p2.jpg" width="200"  height="400"  title="Home - State 3" />
+ 
+</p>
+##Drawer
+<p float="left">
+  <img src="screenshots/p8.jpg" width="200"  height="400" title="drawer - State 1" />
+  </p>
+##Other Screens 
+<p>
+ <img src="screenshots/p3.jpg" width="200"  height="400" title="" />
+  <img src="screenshots/p4.jpg" width="200"  height="400" title="" />
+  <img src="screenshots/p5.jpg" width="200"  height="400"  title="" />
+ <img src="screenshots/p6.jpg" width="200"  height="400" title="" />
+  <img src="screenshots/p7.jpg" width="200"  height="400" title="" />
+  <img src="screenshots/p9.jpg" width="200"  height="400"  title="" />
+   <img src="screenshots/p10.jpg" width="200"  height="400" title="" />
+  <img src="screenshots/p11.jpg" width="200"  height="400" title="" />
+  <img src="screenshots/p12.jpg" width="200"  height="400"  title="" />
+    <img src="screenshots/p14.jpg" width="200"  height="400"  title="" />
+
+  
+</p>
 ## Getting Started
 
 1. Clone the repository:
