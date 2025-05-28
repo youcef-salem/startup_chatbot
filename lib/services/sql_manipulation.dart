@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:startup_chatbot/model/conversation.dart';

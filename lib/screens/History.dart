@@ -1,10 +1,10 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:startup_chatbot/model/conversation.dart';
+
 import 'package:startup_chatbot/services/sql_manipulation.dart';
 
 class History extends StatefulWidget {
@@ -18,7 +18,7 @@ class _HistoryState extends State<History> {
   SqlManipulation sqlManipulation = SqlManipulation();
   Map<String, List<types.Message>> _chatSessions = {};
   String? _expandedChatId;
-  final types.User _user = const types.User(id: "user_id");
+
   final types.User _bot = const types.User(id: "bot_id");
   final types.User _newchat = const types.User(id: "new_chat");
 

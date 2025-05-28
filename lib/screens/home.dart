@@ -131,15 +131,7 @@ sqlManipulation.InsertConversation(
     // Initialize any necessary data or state here
   }
 
-  Future<void> _initSpeechService() async {
-    await rec_service.requestPermission();
-    bool isAvailable = await rec_service.initilasation();
-    if (isAvailable) {
-      setState(() {
-        pemisionrequest = true;
-      });
-    }
-  }
+  
 
   void _updateTextcontrol(String newText) {
     setState(() {
@@ -159,7 +151,7 @@ sqlManipulation.InsertConversation(
 
   @override
   Widget build(BuildContext context) {
-    final rec_serv = Provider.of<Rec_service>(context);
+ 
 
     return Scaffold(
       // Remove drawer to match the screenshot
