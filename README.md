@@ -61,4 +61,4 @@ Various Flutter packages:
 
 1. Clone the repository:
 ```sh
-git clone https://github.com/yourusername/startup_chatbot.git
+git clone https://github.com/youcef-salem/startup_chatbot.git
